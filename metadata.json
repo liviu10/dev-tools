@@ -1,0 +1,5 @@
+{
+  "name": "Dev Tools",
+  "description": "A handy collection of developer tools, including a dashboard and a secure password generator.",
+  "requestFramePermissions": []
+}
