@@ -1,17 +1,8 @@
 import React, { useState, useEffect } from 'react';
-
-const CodeDisplay: React.FC<{ title: string; data: string | null; colorClass: string; note?: string }> = ({ title, data, colorClass, note }) => (
-    <div>
-        <h3 className={`text-lg font-semibold mb-2 ${colorClass}`}>{title}</h3>
-        <textarea
-            readOnly
-            value={data || ''}
-            placeholder="..."
-            className="w-full h-40 font-mono text-sm bg-gray-900 border border-gray-600 rounded-lg p-3 focus:outline-none resize-none"
-        />
-        {note && <p className="text-xs text-gray-500 mt-1">{note}</p>}
-    </div>
-);
+import StatusBanner from './ui/StatusBanner';
+import ToolLayout from './ui/ToolLayout';
+import CodeDisplay from './ui/CodeDisplay';
+import ToolActionButtons from './ui/ToolActionButtons';
 
 const JwtDecoder: React.FC = () => {
     const [jwt, setJwt] = useState('');
@@ -72,42 +63,43 @@ const JwtDecoder: React.FC = () => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold mb-6 text-white">JWT Decoder</h2>
-            <div className="bg-gray-800 p-4 sm:p-6 rounded-lg shadow-2xl border border-gray-700 space-y-6">
-                <div>
-                    <label htmlFor="jwt-input" className="block text-sm font-medium text-gray-300 mb-2">Encoded JWT</label>
+        <ToolLayout title="JWT Decoder">
+            <div>
+                <label htmlFor="jwt-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Encoded JWT</label>
+                <textarea
+                    id="jwt-input"
+                    value={jwt}
+                    onChange={(e) => setJwt(e.target.value)}
+                    placeholder="Paste your JSON Web Token here"
+                    className={`w-full h-32 font-mono text-sm bg-gray-100 dark:bg-gray-900 border rounded-lg p-3 focus:outline-none focus:ring-2 resize-y ${error ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600 focus:ring-indigo-500'}`}
+                />
+            </div>
+            
+            {error && <StatusBanner type="error" message={error} />}
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                 <CodeDisplay title="Header" code={header || ''} language="json" titleClassName="!text-red-500 dark:!text-red-400 !font-semibold !text-lg" textareaClassName="h-40" />
+                 <CodeDisplay title="Payload" code={payload || ''} language="json" titleClassName="!text-purple-500 dark:!text-purple-400 !font-semibold !text-lg" textareaClassName="h-40" />
+                 <div>
+                    <h3 className="text-lg font-semibold mb-2 text-blue-500 dark:text-blue-400">Signature</h3>
                     <textarea
-                        id="jwt-input"
-                        value={jwt}
-                        onChange={(e) => setJwt(e.target.value)}
-                        placeholder="Paste your JSON Web Token here"
-                        className={`w-full h-32 font-mono text-sm bg-gray-900 border rounded-lg p-3 focus:outline-none focus:ring-2 resize-y ${error ? 'border-red-500 focus:ring-red-500' : 'border-gray-600 focus:ring-indigo-500'}`}
+                        readOnly
+                        value={signature || ''}
+                        placeholder="..."
+                        className="w-full h-40 font-mono text-sm bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none resize-none"
                     />
-                </div>
-                
-                {error && (
-                    <div className="p-3 bg-red-900/50 text-red-300 border border-red-700 rounded-lg text-sm">
-                        <strong>Error:</strong> {error}
-                    </div>
-                )}
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                     <CodeDisplay title="Header" data={header} colorClass="text-red-400" />
-                     <CodeDisplay title="Payload" data={payload} colorClass="text-purple-400" />
-                     <CodeDisplay title="Signature" data={signature} colorClass="text-blue-400" note="Signature is not verified." />
-                </div>
-
-                <div className="mt-2 flex justify-end">
-                    <button
-                        onClick={handleClear}
-                        className="bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-red-500 transition"
-                    >
-                        Clear
-                    </button>
+                    <p className="text-xs text-gray-500 mt-1">Signature is not verified.</p>
                 </div>
             </div>
-        </div>
+            
+            <ToolActionButtons
+                onPrimaryAction={() => {}}
+                primaryActionText="Decode"
+                isPrimaryActionDisabled={true}
+                onClear={handleClear}
+            />
+
+        </ToolLayout>
     );
 };
 

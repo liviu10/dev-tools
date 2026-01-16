@@ -8,8 +8,8 @@ interface CardProps {
 
 const Card: React.FC<CardProps> = ({ tool, onClick }) => {
   const cardClasses = tool.enabled
-    ? 'bg-gray-800 border-gray-700 hover:border-indigo-500 hover:shadow-lg hover:shadow-indigo-500/10 transform hover:-translate-y-1 cursor-pointer'
-    : 'bg-gray-800 border-gray-700 opacity-50 cursor-not-allowed';
+    ? 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-indigo-500 hover:shadow-lg hover:shadow-indigo-500/10 transform hover:-translate-y-1 cursor-pointer'
+    : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 opacity-50 cursor-not-allowed';
   
   const handleClick = () => {
     if (tool.enabled) {
@@ -24,10 +24,10 @@ const Card: React.FC<CardProps> = ({ tool, onClick }) => {
     >
       <div className="flex justify-between items-start mb-4">
         <div className="flex-shrink-0">{tool.icon}</div>
-        <span className="bg-gray-700 text-gray-300 text-xs font-semibold px-2.5 py-1 rounded-full">{tool.category}</span>
+        <span className="bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300 text-xs font-semibold px-2.5 py-1 rounded-full">{tool.category}</span>
       </div>
-      <h3 className="text-lg font-semibold text-white mb-2">{tool.name}</h3>
-      <p className="text-gray-400 text-sm flex-grow">{tool.description}</p>
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{tool.name}</h3>
+      <p className="text-gray-600 dark:text-gray-400 text-sm flex-grow">{tool.description}</p>
     </div>
   );
 };

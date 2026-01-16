@@ -1,4 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
+import ToolActionButtons from './ui/ToolActionButtons';
+import StatusBanner from './ui/StatusBanner';
+import ToolLayout from './ui/ToolLayout';
+import TabSelector from './ui/TabSelector';
 
 type Encoding = 'base64' | 'url';
 
@@ -78,74 +82,71 @@ const EncoderDecoder: React.FC = () => {
         setEncoding(newEncoding);
         handleClear();
     }
+    
+    const encodingOptions = [
+        { value: 'base64', label: 'Base64' },
+        { value: 'url', label: 'URL' },
+    ];
 
     return (
-        <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-6">
-                <h2 className="text-3xl font-bold text-white">Encoder / Decoder</h2>
-                <div className="flex items-center space-x-1 bg-gray-900 p-1 rounded-md mt-4 sm:mt-0">
-                    <button onClick={() => handleEncodingChange('base64')} className={`px-4 py-1.5 text-sm font-semibold rounded-md transition ${encoding === 'base64' ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                        Base64
-                    </button>
-                    <button onClick={() => handleEncodingChange('url')} className={`px-4 py-1.5 text-sm font-semibold rounded-md transition ${encoding === 'url' ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-700'}`}>
-                        URL
-                    </button>
+        <ToolLayout title="Encoder / Decoder" maxWidth="max-w-7xl">
+            <div className="flex flex-col sm:flex-row justify-end mb-4">
+                <div className="mt-4 sm:mt-0">
+                    <TabSelector 
+                        options={encodingOptions}
+                        activeOption={encoding}
+                        onSelect={(val) => handleEncodingChange(val as Encoding)}
+                    />
                 </div>
             </div>
-            <div className="bg-gray-800 p-4 sm:p-6 rounded-lg shadow-2xl border border-gray-700">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label htmlFor="decoded-text" className="block text-sm font-medium text-gray-300 mb-2">Decoded</label>
-                        <textarea
-                            id="decoded-text"
-                            value={decodedText}
-                            onChange={handleDecodedChange}
-                            placeholder='Type or paste your text here...'
-                            className="w-full h-80 font-mono text-sm bg-gray-900 border border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="encoded-text" className="block text-sm font-medium text-gray-300 mb-2">Encoded</label>
-                        <textarea
-                            id="encoded-text"
-                            value={encodedText}
-                            onChange={handleEncodedChange}
-                            placeholder='Encoded output will appear here...'
-                            className={`w-full h-80 font-mono text-sm bg-gray-900 border rounded-lg p-3 focus:outline-none focus:ring-2 ${error ? 'border-red-500 focus:ring-red-500' : 'border-gray-600 focus:ring-indigo-500'}`}
-                        />
-                    </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label htmlFor="decoded-text" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Decoded</label>
+                    <textarea
+                        id="decoded-text"
+                        value={decodedText}
+                        onChange={handleDecodedChange}
+                        placeholder='Type or paste your text here...'
+                        className="w-full h-80 font-mono text-sm bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
                 </div>
-
-                {error && (
-                    <div className="mt-4 p-3 bg-red-900/50 text-red-300 border border-red-700 rounded-lg text-sm">
-                        <strong>Error:</strong> {error}
-                    </div>
-                )}
-
-                <div className="mt-6 flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4">
-                     <button
-                        onClick={() => handleCopy('decoded')}
-                        disabled={!decodedText}
-                        className="w-full sm:w-auto flex-1 bg-gray-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-gray-500 transition"
-                    >
-                        {copied === 'decoded' ? 'Copied!' : 'Copy Decoded'}
-                    </button>
-                    <button
-                        onClick={() => handleCopy('encoded')}
-                        disabled={!encodedText}
-                        className="w-full sm:w-auto flex-1 bg-gray-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-gray-500 transition"
-                    >
-                        {copied === 'encoded' ? 'Copied!' : 'Copy Encoded'}
-                    </button>
-                    <button
-                        onClick={handleClear}
-                         className="w-full sm:w-auto flex-1 bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-red-500 transition"
-                    >
-                        Clear
-                    </button>
+                <div>
+                    <label htmlFor="encoded-text" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Encoded</label>
+                    <textarea
+                        id="encoded-text"
+                        value={encodedText}
+                        onChange={handleEncodedChange}
+                        placeholder='Encoded output will appear here...'
+                        className={`w-full h-80 font-mono text-sm bg-white dark:bg-gray-900 border rounded-lg p-3 focus:outline-none focus:ring-2 ${error ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600 focus:ring-indigo-500'}`}
+                    />
                 </div>
             </div>
-        </div>
+
+            {error && <StatusBanner type="error" message={error} />}
+
+            <div className="mt-6 flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4">
+                 <button
+                    onClick={() => handleCopy('decoded')}
+                    disabled={!decodedText}
+                    className="w-full sm:w-auto flex-1 bg-gray-500 hover:bg-gray-600 dark:bg-gray-600 dark:hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-800 focus:ring-gray-500 transition"
+                >
+                    {copied === 'decoded' ? 'Copied!' : 'Copy Decoded'}
+                </button>
+                <button
+                    onClick={() => handleCopy('encoded')}
+                    disabled={!encodedText}
+                    className="w-full sm:w-auto flex-1 bg-gray-500 hover:bg-gray-600 dark:bg-gray-600 dark:hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-800 focus:ring-gray-500 transition"
+                >
+                    {copied === 'encoded' ? 'Copied!' : 'Copy Encoded'}
+                </button>
+                <button
+                    onClick={handleClear}
+                     className="w-full sm:w-auto flex-1 bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-800 focus:ring-red-500 transition"
+                >
+                    Clear
+                </button>
+            </div>
+        </ToolLayout>
     );
 };
 

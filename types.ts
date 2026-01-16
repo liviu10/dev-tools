@@ -1,8 +1,9 @@
 import type React from 'react';
 
-export type View = 'dashboard' | 'passwordGenerator' | 'jsonFormatter' | 'encoderDecoder' | 'jsonCrack' | 'jsValidator' | 'colorPicker' | 'loremIpsumGenerator' | 'jwtDecoder' | 'hashGenerator' | 'uuidGenerator' | 'unixTimestampConverter' | 'regexTester' | 'fakeDataGenerator' | 'timeZoneConverter' | 'textToMarkdownConverter' | 'csvXmlToJsonConverter' | 'codeOptimizer' | 'cssPurifier' | 'iconGenerator' | 'imageToWebpConverter' | 'linuxReference' | 'htmlCheatSheet' | 'cssCheatSheet' | 'javaScriptCheatSheet' | 'phpCheatSheet' | 'laravelCheatSheet' | 'pythonCheatSheet' | 'drfCheatSheet' | 'htaccessCheatSheet' | 'bashCheatSheet' | 'powershellCheatSheet' | 'gitCheatSheet';
+// Fix: Added 'iconGenerator' to the View type to allow it as a valid navigation target.
+export type View = 'dashboard' | 'passwordGenerator' | 'jsonFormatter' | 'encoderDecoder' | 'jsonCrack' | 'jsValidator' | 'colorPicker' | 'loremIpsumGenerator' | 'jwtDecoder' | 'hashGenerator' | 'uuidGenerator' | 'unixTimestampConverter' | 'regexTester' | 'fakeDataGenerator' | 'csvXmlToJsonConverter' | 'codeOptimizer' | 'cssPurifier' | 'imageToWebpConverter' | 'iconGenerator' | 'htmlCssCheatSheet' | 'javaScriptCheatSheet' | 'phpLaravelCheatSheet' | 'pythonDrfCheatSheet' | 'gitCheatSheet' | 'bashCheatSheet' | 'powerShellCheatSheet' | 'linuxReference' | 'htaccessCheatSheet';
 
-export type ToolCategory = 'Generators' | 'JSON' | 'Web' | 'Encoding' | 'Code' | 'Media' | 'Cheat Sheets';
+export type ToolCategory = 'Generators' | 'JSON' | 'Encoding' | 'Code' | 'Media' | 'Cheat Sheets' | 'System';
 
 export interface DevTool {
   id: View;
@@ -20,3 +21,12 @@ export interface PasswordOptions {
   includeNumbers: boolean;
   includeSymbols: boolean;
 }
+
+// Types for HtmlLayoutGenerator
+export type ContentType = 'empty' | 'text' | 'button' | 'card' | 'image' | 'input';
+
+export interface ItemContent {
+    type: ContentType;
+    props: { [key: string]: any };
+}
+export type ItemContentMap = { [key: string]: ItemContent };

@@ -1,37 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-
-const pad = (num: number) => num.toString().padStart(2, '0');
-
-const OutputField: React.FC<{ label: string, value: string, onCopy: () => void, copied: boolean }> = ({ label, value, onCopy, copied }) => (
-    <div>
-        <label className="block text-sm font-medium text-gray-300 mb-2">{label}</label>
-        <div className="relative">
-            <input
-                type="text"
-                readOnly
-                value={value}
-                className="w-full bg-gray-900 border border-gray-700 text-gray-200 text-sm font-mono p-3 rounded-lg pr-12 focus:outline-none"
-                placeholder="..."
-            />
-            <button
-                onClick={onCopy}
-                disabled={!value}
-                className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-indigo-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
-                title="Copy"
-            >
-                {copied ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                    </svg>
-                )}
-            </button>
-        </div>
-    </div>
-);
+import CopyableInput from './ui/CopyableInput';
+import ToolLayout from './ui/ToolLayout';
+import { padNumber } from '../utils/formatters';
 
 
 const UnixTimestampConverter: React.FC = () => {
@@ -41,7 +11,6 @@ const UnixTimestampConverter: React.FC = () => {
     const [dateOutputUTC, setDateOutputUTC] = useState('');
     const [dateOutputLocal, setDateOutputLocal] = useState('');
     const [error, setError] = useState<string | null>(null);
-    const [copied, setCopied] = useState<string | null>(null);
     
     // Date to Timestamp conversion
     useEffect(() => {
@@ -98,11 +67,11 @@ const UnixTimestampConverter: React.FC = () => {
         const now = new Date();
         setDateInput({
             year: now.getUTCFullYear().toString(),
-            month: pad(now.getUTCMonth() + 1),
-            day: pad(now.getUTCDate()),
-            hour: pad(now.getUTCHours()),
-            minute: pad(now.getUTCMinutes()),
-            second: pad(now.getUTCSeconds()),
+            month: padNumber(now.getUTCMonth() + 1),
+            day: padNumber(now.getUTCDate()),
+            hour: padNumber(now.getUTCHours()),
+            minute: padNumber(now.getUTCMinutes()),
+            second: padNumber(now.getUTCSeconds()),
         });
     };
     
@@ -110,57 +79,50 @@ const UnixTimestampConverter: React.FC = () => {
         setTimestampInput(Math.floor(Date.now() / 1000).toString());
     };
 
-    const handleCopy = useCallback((text: string, id: string) => {
-        navigator.clipboard.writeText(text);
-        setCopied(id);
-        setTimeout(() => setCopied(null), 2000);
-    }, []);
-
     return (
-        <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold mb-6 text-white">Unix Timestamp Converter</h2>
+        <ToolLayout title="Unix Timestamp Converter" maxWidth="max-w-6xl">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Date to Timestamp */}
-                <div className="bg-gray-800 p-6 rounded-lg shadow-2xl border border-gray-700 space-y-4">
+                <div className="bg-gray-100 dark:bg-gray-900/50 p-6 rounded-lg space-y-4 border border-gray-200 dark:border-gray-700">
                      <div className="flex justify-between items-center">
-                        <h3 className="text-xl font-semibold text-white">Date to Timestamp</h3>
-                        <button onClick={setToNow1} className="text-sm bg-gray-700 text-gray-300 hover:bg-gray-600 px-3 py-1 rounded-md transition">Set to Now (UTC)</button>
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Date to Timestamp</h3>
+                        <button onClick={setToNow1} className="text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 px-3 py-1 rounded-md transition">Set to Now (UTC)</button>
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                         {(Object.keys(dateInput) as Array<keyof typeof dateInput>).map(key => (
                             <div key={key}>
-                                <label htmlFor={key} className="block text-xs font-medium text-gray-400 capitalize mb-1">{key}</label>
+                                <label htmlFor={key} className="block text-xs font-medium text-gray-500 dark:text-gray-400 capitalize mb-1">{key}</label>
                                 <input id={key} type="text" value={dateInput[key]} onChange={e => handleDateInputChange(key, e.target.value)}
-                                       className="w-full bg-gray-900 border border-gray-700 text-gray-200 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                       className="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-200 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                             </div>
                         ))}
                     </div>
-                    {error && <p className="text-red-400 text-sm">{error}</p>}
-                    <OutputField label="Unix Timestamp (seconds)" value={timestampOutput} onCopy={() => handleCopy(timestampOutput, 'ts-out')} copied={copied === 'ts-out'} />
+                    {error && <p className="text-red-500 dark:text-red-400 text-sm">{error}</p>}
+                    <CopyableInput label="Unix Timestamp (seconds)" value={timestampOutput} />
                 </div>
 
                 {/* Timestamp to Date */}
-                 <div className="bg-gray-800 p-6 rounded-lg shadow-2xl border border-gray-700 space-y-4">
+                 <div className="bg-gray-100 dark:bg-gray-900/50 p-6 rounded-lg space-y-4 border border-gray-200 dark:border-gray-700">
                      <div className="flex justify-between items-center">
-                        <h3 className="text-xl font-semibold text-white">Timestamp to Date</h3>
-                        <button onClick={setToNow2} className="text-sm bg-gray-700 text-gray-300 hover:bg-gray-600 px-3 py-1 rounded-md transition">Set to Now</button>
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Timestamp to Date</h3>
+                        <button onClick={setToNow2} className="text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 px-3 py-1 rounded-md transition">Set to Now</button>
                     </div>
 
                     <div>
-                        <label htmlFor="ts-input" className="block text-sm font-medium text-gray-300 mb-2">Unix Timestamp (s or ms)</label>
+                        <label htmlFor="ts-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Unix Timestamp (s or ms)</label>
                          <input id="ts-input" type="text" value={timestampInput} onChange={e => setTimestampInput(e.target.value.replace(/[^0-9]/g, ''))}
-                               className="w-full bg-gray-900 border border-gray-700 text-gray-200 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono" />
+                               className="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-200 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono" />
                     </div>
                     
                     <div className="space-y-4">
-                        <OutputField label="UTC" value={dateOutputUTC} onCopy={() => handleCopy(dateOutputUTC, 'utc-out')} copied={copied === 'utc-out'} />
-                        <OutputField label="Your Local Time" value={dateOutputLocal} onCopy={() => handleCopy(dateOutputLocal, 'local-out')} copied={copied === 'local-out'} />
+                        <CopyableInput label="UTC" value={dateOutputUTC} />
+                        <CopyableInput label="Your Local Time" value={dateOutputLocal} />
                     </div>
                 </div>
 
             </div>
-        </div>
+        </ToolLayout>
     );
 };
 

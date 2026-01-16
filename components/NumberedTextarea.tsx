@@ -22,10 +22,10 @@ const NumberedTextarea: React.FC<NumberedTextareaProps> = ({ value, containerCla
     const sharedTextStyles = 'font-mono text-sm leading-6 pt-3 pb-3';
 
     return (
-        <div className={`flex w-full h-full bg-gray-900 border rounded-lg focus-within:ring-2 focus-within:ring-opacity-50 overflow-hidden ${containerClassName}`}>
+        <div className={`flex w-full h-full bg-white dark:bg-gray-900 border rounded-lg focus-within:ring-2 focus-within:ring-opacity-50 overflow-hidden ${containerClassName}`}>
             <div
                 ref={lineNumbersRef}
-                className={`w-12 text-right pr-2 text-gray-500 select-none overflow-y-hidden ${sharedTextStyles}`}
+                className={`w-12 text-right pr-2 text-gray-400 dark:text-gray-500 select-none overflow-y-hidden ${sharedTextStyles}`}
                 aria-hidden="true"
             >
                 {lineNumbers.map(num => (
@@ -36,7 +36,7 @@ const NumberedTextarea: React.FC<NumberedTextareaProps> = ({ value, containerCla
                 ref={textareaRef}
                 value={value}
                 onScroll={handleScroll}
-                className={`flex-1 bg-transparent focus:outline-none resize-none text-gray-100 ${sharedTextStyles} pl-2`}
+                className={`flex-1 bg-transparent focus:outline-none resize-none text-gray-800 dark:text-gray-100 ${sharedTextStyles} pl-2`}
                 spellCheck="false"
                 {...rest}
             />
