@@ -1,146 +1,101 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { api } from '../services/api';
-import { Transaction, Category, TransactionType, Account } from '../types';
-import { formatCurrency } from '../utils/helpers';
-import Card from './shared/Card';
-import { ICONS } from '../constants';
+import React, { useState, useEffect, useMemo } from 'react';
+import { getDevTools } from '../services/api';
+import Card from './Card';
+import type { DevTool, View } from '../types';
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
+interface DashboardProps {
+    onNavigate: (view: View) => void;
+}
 
-const Dashboard: React.FC = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [accounts, setAccounts] = useState<Account[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
+  const [tools, setTools] = useState<DevTool[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const [transData, catData, accData] = await Promise.all([
-          api.getTransactions(),
-          api.getCategories(),
-          api.getAccounts()
-        ]);
-        setTransactions(transData);
-        setCategories(catData);
-        setAccounts(accData);
-      } catch (error) {
-        console.error("Failed to fetch dashboard data:", error);
-      } finally {
-        setIsLoading(false);
-      }
+    const fetchTools = async () => {
+      setLoading(true);
+      const fetchedTools = await getDevTools();
+      setTools(fetchedTools);
+      setLoading(false);
     };
-    fetchData();
+
+    fetchTools();
   }, []);
 
-  const stats = useMemo(() => {
-    const totalIncome = transactions
-      .filter(t => t.type === TransactionType.INCOME)
-      .reduce((sum, t) => sum + t.amount, 0);
-    const totalExpense = transactions
-      .filter(t => t.type === TransactionType.EXPENSE)
-      .reduce((sum, t) => sum + t.amount, 0);
-    const balance = totalIncome - totalExpense;
-    return { totalIncome, totalExpense, balance };
-  }, [transactions]);
+  const categories = useMemo(() => {
+    if (loading) return [];
+    const uniqueCategories = [...new Set(tools.map(tool => tool.category))];
+    return ['All', ...uniqueCategories.sort()];
+  }, [tools, loading]);
 
-  const accountBalances = useMemo(() => {
-    return accounts.map(account => {
-        const accountTransactions = transactions.filter(t => t.accountId === account.id);
-        const balance = accountTransactions.reduce((acc, t) => {
-            return t.type === TransactionType.INCOME ? acc + t.amount : acc - t.amount;
-        }, account.initialBalance);
-        return { ...account, balance };
+  const filteredTools = useMemo(() => {
+    return tools.filter(tool => {
+      const categoryMatch = selectedCategory === 'All' || tool.category === selectedCategory;
+      const searchMatch = tool.name.toLowerCase().includes(searchQuery.toLowerCase());
+      return categoryMatch && searchMatch;
     });
-  }, [accounts, transactions]);
+  }, [tools, searchQuery, selectedCategory]);
 
-  const expenseByCategory = useMemo(() => {
-    const expenseData: { [key: string]: number } = {};
-    transactions
-      .filter(t => t.type === TransactionType.EXPENSE)
-      .forEach(t => {
-        const category = categories.find(c => c.id === t.categoryId);
-        if (category) {
-          expenseData[category.name] = (expenseData[category.name] || 0) + t.amount;
-        }
-      });
-    return Object.entries(expenseData).map(([name, value]) => ({ name, value }));
-  }, [transactions, categories]);
-
-  const incomeVsExpenseData = [
-    { name: 'Total', Income: stats.totalIncome, Expense: stats.totalExpense }
-  ];
-
-  if (isLoading) {
-    return <div className="text-center p-8">Loading dashboard...</div>;
+  if (loading) {
+    return (
+        <div className="flex justify-center items-center h-64">
+             <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-indigo-500"></div>
+        </div>
+    );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card title="Total Income" icon={ICONS.INCOME}>
-          <p className="text-3xl font-bold text-green-500">{formatCurrency(stats.totalIncome)}</p>
-        </Card>
-        <Card title="Total Expenses" icon={ICONS.EXPENSE}>
-          <p className="text-3xl font-bold text-red-500">{formatCurrency(stats.totalExpense)}</p>
-        </Card>
-        <Card title="Account Balances" icon={ICONS.ACCOUNTS}>
-          <div className="space-y-2">
-            {accountBalances.map(account => (
-              <div key={account.id} className="flex justify-between items-center">
-                <span className="font-medium">{account.name}</span>
-                <span className={`font-semibold ${account.balance >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                  {formatCurrency(account.balance)}
-                </span>
-              </div>
-            ))}
-            <div className="border-t dark:border-gray-700 mt-2 pt-2 flex justify-between items-center font-bold">
-              <span>Total</span>
-              <span>{formatCurrency(accountBalances.reduce((sum, acc) => sum + acc.balance, 0))}</span>
+    <div className="max-w-7xl mx-auto">
+      <h2 className="text-3xl font-bold mb-6 text-white">Tools Dashboard</h2>
+      
+      <div className="mb-8 p-4 bg-gray-800/50 border border-gray-700 rounded-lg">
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="relative flex-grow">
+            <input
+                type="text"
+                placeholder="Search tools by name..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-gray-900 border border-gray-600 rounded-md py-2.5 pl-10 pr-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                aria-label="Search tools"
+            />
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <div className="flex-shrink-0">
+             <div className="flex items-center space-x-2 overflow-x-auto pb-2 -mb-2">
+                {categories.map(category => (
+                    <button
+                        key={category}
+                        onClick={() => setSelectedCategory(category)}
+                        className={`px-4 py-2 rounded-md font-semibold transition text-sm whitespace-nowrap ${selectedCategory === category ? 'bg-indigo-600 text-white shadow-md' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
+                    >
+                        {category}
+                    </button>
+                ))}
             </div>
           </div>
-        </Card>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card title="Income vs Expenses">
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={incomeVsExpenseData}>
-              <XAxis dataKey="name" />
-              <YAxis tickFormatter={formatCurrency} />
-              <Tooltip formatter={(value: number) => formatCurrency(value)} />
-              <Legend />
-              <Bar dataKey="Income" fill="#22c55e" />
-              <Bar dataKey="Expense" fill="#ef4444" />
-            </BarChart>
-          </ResponsiveContainer>
-        </Card>
-        <Card title="Expense Breakdown">
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={expenseByCategory}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                outerRadius={80}
-                fill="#8884d8"
-                dataKey="value"
-                nameKey="name"
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-              >
-                {expenseByCategory.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip formatter={(value: number) => formatCurrency(value)} />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        </Card>
-      </div>
+      {filteredTools.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredTools.map((tool) => (
+            <Card key={tool.name} tool={tool} onClick={onNavigate} />
+          ))}
+        </div>
+      ) : (
+          <div className="text-center py-16 px-6 bg-gray-800 border border-gray-700 rounded-lg">
+              <svg className="mx-auto h-12 w-12 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+              </svg>
+              <h3 className="mt-2 text-xl font-medium text-gray-300">No tools found</h3>
+              <p className="mt-1 text-sm text-gray-500">Try adjusting your search or filter criteria.</p>
+          </div>
+      )}
     </div>
   );
 };

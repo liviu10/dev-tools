@@ -1,4 +1,5 @@
 {
-  "name": "Family Budget",
-  "description": "An application to manage family expenses and income, with features like category management, data visualization, and import/export functionality."
+  "name": "Dev Tools",
+  "description": "A handy collection of developer tools, including a dashboard and a secure password generator.",
+  "requestFramePermissions": []
 }

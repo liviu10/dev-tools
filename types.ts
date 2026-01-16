@@ -1,40 +1,22 @@
-export interface Account {
-  id: string;
+import type React from 'react';
+
+export type View = 'dashboard' | 'passwordGenerator' | 'jsonFormatter' | 'encoderDecoder' | 'jsonCrack' | 'jsValidator' | 'colorPicker' | 'loremIpsumGenerator' | 'jwtDecoder' | 'hashGenerator' | 'uuidGenerator' | 'unixTimestampConverter' | 'regexTester' | 'fakeDataGenerator' | 'timeZoneConverter' | 'textToMarkdownConverter' | 'csvXmlToJsonConverter' | 'codeOptimizer' | 'cssPurifier' | 'iconGenerator' | 'imageToWebpConverter' | 'linuxReference' | 'htmlCheatSheet' | 'cssCheatSheet' | 'javaScriptCheatSheet' | 'phpCheatSheet' | 'laravelCheatSheet' | 'pythonCheatSheet' | 'drfCheatSheet' | 'htaccessCheatSheet' | 'bashCheatSheet' | 'powershellCheatSheet' | 'gitCheatSheet';
+
+export type ToolCategory = 'Generators' | 'JSON' | 'Web' | 'Encoding' | 'Code' | 'Media' | 'Cheat Sheets';
+
+export interface DevTool {
+  id: View;
   name: string;
-  iban: string;
-  initialBalance: number;
-}
-
-export enum TransactionType {
-  INCOME = 'INCOME',
-  EXPENSE = 'EXPENSE',
-}
-
-export interface Subcategory {
-  id: string;
-  name: string;
-}
-
-export interface Category {
-  id: string;
-  name: string;
-  type: TransactionType;
-  subcategories: Subcategory[];
-}
-
-export interface Transaction {
-  id:string;
-  date: string; // ISO string format
+  category: ToolCategory;
   description: string;
-  amount: number;
-  type: TransactionType;
-  categoryId: string;
-  subcategoryId?: string;
-  accountId: string;
+  icon: React.ReactNode;
+  enabled: boolean;
 }
 
-export interface User {
-  id: string;
-  username: string;
-  name: string;
+export interface PasswordOptions {
+  length: number;
+  includeUppercase: boolean;
+  includeLowercase: boolean;
+  includeNumbers: boolean;
+  includeSymbols: boolean;
 }
