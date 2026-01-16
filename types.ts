@@ -1,22 +1,40 @@
-import type React from 'react';
-
-export type View = 'dashboard' | 'passwordGenerator' | 'jsonFormatter' | 'base64EncoderDecoder' | 'jsonCrack' | 'jsonValidator' | 'jsValidator' | 'colorPicker' | 'loremIpsumGenerator' | 'urlEncoderDecoder' | 'jwtDecoder' | 'hashGenerator' | 'uuidGenerator' | 'unixTimestampConverter' | 'regexTester' | 'fakeDataGenerator' | 'timeZoneConverter' | 'textToMarkdownConverter' | 'csvXmlToJsonConverter' | 'codeFormatter' | 'minifier' | 'cssPurifier' | 'iconGenerator' | 'imageToWebpConverter';
-
-export type ToolCategory = 'Generators' | 'JSON' | 'Web' | 'Encoding' | 'Code' | 'Media';
-
-export interface DevTool {
-  id: View;
+export interface Account {
+  id: string;
   name: string;
-  category: ToolCategory;
-  description: string;
-  icon: React.ReactNode;
-  enabled: boolean;
+  iban: string;
+  initialBalance: number;
 }
 
-export interface PasswordOptions {
-  length: number;
-  includeUppercase: boolean;
-  includeLowercase: boolean;
-  includeNumbers: boolean;
-  includeSymbols: boolean;
+export enum TransactionType {
+  INCOME = 'INCOME',
+  EXPENSE = 'EXPENSE',
+}
+
+export interface Subcategory {
+  id: string;
+  name: string;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  type: TransactionType;
+  subcategories: Subcategory[];
+}
+
+export interface Transaction {
+  id:string;
+  date: string; // ISO string format
+  description: string;
+  amount: number;
+  type: TransactionType;
+  categoryId: string;
+  subcategoryId?: string;
+  accountId: string;
+}
+
+export interface User {
+  id: string;
+  username: string;
+  name: string;
 }

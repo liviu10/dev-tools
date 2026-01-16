@@ -1,5 +1,5 @@
 {
-  "name": "dev-tools",
+  "name": "family-budget",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,11 +11,7 @@
   "dependencies": {
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
-    "acorn": "8.11.3",
-    "marked": "^12.0.2",
-    "prettier": "3.3.2",
-    "terser": "5.31.0",
-    "jszip": "3.10.1"
+    "recharts": "^3.6.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
