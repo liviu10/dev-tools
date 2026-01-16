@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef } from 'react';
 import JSZip from 'jszip';
 import Slider from './ui/Slider';
 import ToolLayout from './ui/ToolLayout';
-import { formatBytes } from '../../utils/formatters';
+import { formatBytes } from '../utils/formatters';
 import FileListItem from './ImageToWebpConverter/FileListItem';
 // FIX: Import the StatusBanner component to resolve the 'Cannot find name' error.
 import StatusBanner from './ui/StatusBanner';
