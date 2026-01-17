@@ -1,3 +1,4 @@
+
 import React from 'react';
 import TabSelector from './ui/TabSelector';
 
@@ -80,4 +81,4 @@ const CheatSheetLayout: React.FC<CheatSheetLayoutProps> = ({
   );
 };
 
-export default CheatSheetLayout;
+export default React.memo(CheatSheetLayout);

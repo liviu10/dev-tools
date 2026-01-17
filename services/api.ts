@@ -1,3 +1,4 @@
+
 import React from 'react';
 import type { DevTool } from '../types';
 
@@ -125,14 +126,6 @@ const mockDevTools: DevTool[] = [
     category: 'Encoding',
     description: 'Decode a JSON Web Token to view its header and payload contents.',
     icon: React.createElement(JwtIcon),
-    enabled: true,
-  },
-  {
-    id: 'jsValidator',
-    name: 'JavaScript Sandbox',
-    category: 'Code',
-    description: 'Safely execute and test your JavaScript code snippets.',
-    icon: React.createElement(BeakerIcon),
     enabled: true,
   },
     {

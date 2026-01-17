@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 const HighlightedResult: React.FC<{ text: string; matches: RegExpMatchArray[] }> = ({ text, matches }) => {
@@ -32,4 +33,4 @@ const HighlightedResult: React.FC<{ text: string; matches: RegExpMatchArray[] }>
     return <div className="whitespace-pre-wrap break-words font-mono text-sm leading-6">{segments}</div>;
 };
 
-export default HighlightedResult;
+export default React.memo(HighlightedResult);

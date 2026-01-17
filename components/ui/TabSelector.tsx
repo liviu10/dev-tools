@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface TabOption {
@@ -34,4 +35,4 @@ const TabSelector: React.FC<TabSelectorProps> = ({ options, activeOption, onSele
     );
 };
 
-export default TabSelector;
+export default React.memo(TabSelector);

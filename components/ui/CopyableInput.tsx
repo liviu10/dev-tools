@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 
 interface CopyableInputProps {
@@ -52,4 +53,4 @@ const CopyableInput: React.FC<CopyableInputProps> = ({ value, label, placeholder
     );
 };
 
-export default CopyableInput;
+export default React.memo(CopyableInput);

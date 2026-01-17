@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, useMemo } from 'react';
 import NumberedTextarea from './NumberedTextarea';
 import ToolActionButtons from './ui/ToolActionButtons';
 import StatusBanner from './ui/StatusBanner';
@@ -52,7 +53,7 @@ const JsonFormatter: React.FC = () => {
         setIsValid(null);
     };
     
-    const getStatusIndicator = () => {
+    const statusIndicator = useMemo(() => {
         if (isValid === true) {
             return <span className="ml-3 px-2 py-0.5 text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-900/80 dark:text-green-300 border border-green-300 dark:border-green-700 rounded-full">Valid</span>;
         }
@@ -60,7 +61,7 @@ const JsonFormatter: React.FC = () => {
              return <span className="ml-3 px-2 py-0.5 text-xs font-semibold bg-red-100 text-red-800 dark:bg-red-900/80 dark:text-red-300 border border-red-300 dark:border-red-700 rounded-full">Invalid</span>;
         }
         return null;
-    }
+    }, [isValid]);
 
     return (
         <ToolLayout title="JSON Formatter & Validator" maxWidth="max-w-7xl">
@@ -68,7 +69,7 @@ const JsonFormatter: React.FC = () => {
                 <div>
                     <label htmlFor="input-json" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
                         Input JSON
-                        {getStatusIndicator()}
+                        {statusIndicator}
                     </label>
                     <div className="w-full h-96">
                         <NumberedTextarea

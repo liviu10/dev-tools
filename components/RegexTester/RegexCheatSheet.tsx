@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 const RegexCheatSheet: React.FC = () => {
@@ -38,4 +39,4 @@ const RegexCheatSheet: React.FC = () => {
     );
 };
 
-export default RegexCheatSheet;
+export default React.memo(RegexCheatSheet);

@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 const Stat: React.FC<{ label: string, value: number }> = ({ label, value }) => (
@@ -7,4 +8,4 @@ const Stat: React.FC<{ label: string, value: number }> = ({ label, value }) => (
     </div>
 );
 
-export default Stat;
+export default React.memo(Stat);

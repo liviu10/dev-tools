@@ -1,3 +1,4 @@
+
 import React from 'react';
 import type { FileJob } from '../ImageToWebpConverter';
 import { formatBytes } from '../../utils/formatters';
@@ -53,4 +54,4 @@ const FileListItem: React.FC<{ job: FileJob }> = ({ job }) => {
     );
 };
 
-export default FileListItem;
+export default React.memo(FileListItem);

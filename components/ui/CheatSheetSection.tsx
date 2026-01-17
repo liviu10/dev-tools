@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface CheatSheetItem {
@@ -51,4 +52,4 @@ const CheatSheetSection: React.FC<CheatSheetSectionProps> = ({ items, versionPre
   );
 };
 
-export default CheatSheetSection;
+export default React.memo(CheatSheetSection);

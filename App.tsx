@@ -1,30 +1,10 @@
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, lazy, Suspense } from 'react';
 import Header from './components/Header';
-import Dashboard from './components/Dashboard';
-import PasswordGenerator from './components/PasswordGenerator';
-import JsonFormatter from './components/JsonFormatter';
-import JsonCrack from './components/JsonCrack';
-import JsValidator from './components/JsValidator';
-import ColorPicker from './components/ColorPicker';
-import LoremIpsumGenerator from './components/LoremIpsumGenerator';
-import JwtDecoder from './components/JwtDecoder';
-import HashGenerator from './components/HashGenerator';
-import UuidGenerator from './components/UuidGenerator';
-import UnixTimestampConverter from './components/UnixTimestampConverter';
-import RegexTester from './components/RegexTester';
-import FakeDataGenerator from './components/FakeDataGenerator';
-import CsvXmlToJsonConverter from './components/CsvXmlToJsonConverter';
-import CssPurifier from './components/CssPurifier';
-import ImageToWebpConverter from './components/ImageToWebpConverter';
-import EncoderDecoder from './components/EncoderDecoder';
-import CodeOptimizer from './components/CodeOptimizer';
 import type { View } from './types';
-import IconGenerator from './components/IconGenerator';
-import CheatSheetPage from './components/CheatSheetPage';
-import LinuxReference from './components/LinuxReference';
+import LoadingSpinner from './components/ui/LoadingSpinner';
 
-// Data imports for cheat sheets
+// Data imports for cheat sheets (these are just data, not components)
 import { allHtmlTags, commonAttributes } from './data/htmlCheatSheet';
 import { cssData } from './data/cssCheatSheet';
 import { jsData } from './data/javaScriptCheatSheet';
@@ -37,6 +17,26 @@ import { bashData } from './data/bashCheatSheet';
 import { powershellData } from './data/powershellCheatSheet';
 import { htaccessData } from './data/htaccessCheatSheet';
 
+// Lazy-load all tool components for code splitting
+const Dashboard = lazy(() => import('./components/Dashboard'));
+const PasswordGenerator = lazy(() => import('./components/PasswordGenerator'));
+const JsonFormatter = lazy(() => import('./components/JsonFormatter'));
+const JsonCrack = lazy(() => import('./components/JsonCrack'));
+const ColorPicker = lazy(() => import('./components/ColorPicker'));
+const LoremIpsumGenerator = lazy(() => import('./components/LoremIpsumGenerator'));
+const JwtDecoder = lazy(() => import('./components/JwtDecoder'));
+const HashGenerator = lazy(() => import('./components/HashGenerator'));
+const UuidGenerator = lazy(() => import('./components/UuidGenerator'));
+const UnixTimestampConverter = lazy(() => import('./components/UnixTimestampConverter'));
+const RegexTester = lazy(() => import('./components/RegexTester'));
+const FakeDataGenerator = lazy(() => import('./components/FakeDataGenerator'));
+const CsvXmlToJsonConverter = lazy(() => import('./components/CsvXmlToJsonConverter'));
+const CssPurifier = lazy(() => import('./components/CssPurifier'));
+const ImageToWebpConverter = lazy(() => import('./components/ImageToWebpConverter'));
+const EncoderDecoder = lazy(() => import('./components/EncoderDecoder'));
+const CodeOptimizer = lazy(() => import('./components/CodeOptimizer'));
+const CheatSheetPage = lazy(() => import('./components/CheatSheetPage'));
+const LinuxReference = lazy(() => import('./components/LinuxReference'));
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<View>('dashboard');
@@ -71,12 +71,8 @@ const App: React.FC = () => {
         return <CssPurifier />;
       case 'imageToWebpConverter':
         return <ImageToWebpConverter />;
-      case 'iconGenerator':
-        return <IconGenerator />;
       case 'jsonCrack':
         return <JsonCrack />;
-      case 'jsValidator':
-        return <JsValidator />;
       case 'colorPicker':
         return <ColorPicker />;
       case 'encoderDecoder':
@@ -132,11 +128,9 @@ const App: React.FC = () => {
     <div className="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen transition-colors duration-300">
       <Header onNavigate={handleNavigate} />
       <main className="p-4 sm:p-6 lg:p-8">
-        {currentView === 'dashboard' ? (
-          <Dashboard onNavigate={handleNavigate} />
-        ) : (
-          renderView()
-        )}
+        <Suspense fallback={<LoadingSpinner />}>
+          {renderView()}
+        </Suspense>
       </main>
     </div>
   );

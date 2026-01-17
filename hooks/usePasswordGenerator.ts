@@ -33,12 +33,12 @@ export const usePasswordGenerator = () => {
     setPassword(newPassword);
   }, [options]);
 
-  const updateOption = <K extends keyof PasswordOptions>(
+  const updateOption = useCallback(<K extends keyof PasswordOptions>(
     option: K,
     value: PasswordOptions[K]
   ) => {
     setOptions((prev) => ({ ...prev, [option]: value }));
-  };
+  }, []);
 
   return { password, options, generatePassword, updateOption };
 };

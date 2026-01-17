@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 
 interface JsonNodeProps {
@@ -63,4 +64,4 @@ const JsonNode: React.FC<JsonNodeProps> = ({ nodeKey, value, isLast, isRoot = fa
     );
 };
 
-export default JsonNode;
+export default React.memo(JsonNode);

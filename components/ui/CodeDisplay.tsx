@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react';
 
 interface CodeDisplayProps {
@@ -23,7 +24,7 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({
         if (code) {
             navigator.clipboard.writeText(code);
             setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
+            setTimeout(() => setCopied(null), 2000);
         }
     }, [code]);
 
@@ -51,4 +52,4 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({
     );
 };
 
-export default CodeDisplay;
+export default React.memo(CodeDisplay);

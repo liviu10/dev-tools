@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import NumberedTextarea from './NumberedTextarea';
 import ToolLayout from './ui/ToolLayout';
@@ -13,53 +14,56 @@ interface LogEntry {
     timestamp: string;
 }
 
+// Optimization: Moved worker script and pure functions outside the component
+// to prevent them from being redeclared on every render.
+const workerScript = `
+    self.onmessage = (event) => {
+        const code = event.data;
+        if (!code) return;
+
+        const originalConsoleLog = self.console.log;
+        self.console.log = (...args) => {
+            const formattedArgs = args.map(arg => {
+                try {
+                    if (arg === undefined) return 'undefined';
+                    if (typeof arg === 'object' && arg !== null) {
+                        return JSON.stringify(arg, null, 2);
+                    }
+                    return String(arg);
+                } catch(e) {
+                    return '[Unserializable Object]';
+                }
+            });
+            self.postMessage({ type: 'log', data: formattedArgs.join(' ') });
+        };
+
+        try {
+            (new Function(code))();
+            self.postMessage({ type: 'success', data: 'Script finished successfully.' });
+        } catch (e) {
+            self.postMessage({ type: 'error', data: { message: e.message, name: e.name, stack: e.stack }});
+        } finally {
+            self.console.log = originalConsoleLog;
+        }
+    };
+`;
+
+const parseErrorStack = (stack?: string): string | null => {
+    if (!stack) return null;
+    const match = stack.match(/<anonymous>:(\d+):(\d+)/);
+    if (match && match[1] && match[2]) {
+        return `Line: ${match[1]}, Column: ${match[2]}`;
+    }
+    return null;
+};
+
+
 const JsValidator: React.FC = () => {
     const [inputJs, setInputJs] = useState('');
     const [results, setResults] = useState<LogEntry[]>([]);
     const workerRef = useRef<Worker | null>(null);
 
-    const parseErrorStack = (stack?: string): string | null => {
-        if (!stack) return null;
-        const match = stack.match(/<anonymous>:(\d+):(\d+)/);
-        if (match && match[1] && match[2]) {
-            return `Line: ${match[1]}, Column: ${match[2]}`;
-        }
-        return null;
-    };
-
-
     useEffect(() => {
-        const workerScript = `
-            self.onmessage = (event) => {
-                const code = event.data;
-                if (!code) return;
-
-                const originalConsoleLog = self.console.log;
-                self.console.log = (...args) => {
-                    const formattedArgs = args.map(arg => {
-                        try {
-                            if (arg === undefined) return 'undefined';
-                            if (typeof arg === 'object' && arg !== null) {
-                                return JSON.stringify(arg, null, 2);
-                            }
-                            return String(arg);
-                        } catch(e) {
-                            return '[Unserializable Object]';
-                        }
-                    });
-                    self.postMessage({ type: 'log', data: formattedArgs.join(' ') });
-                };
-
-                try {
-                    (new Function(code))();
-                    self.postMessage({ type: 'success', data: 'Script finished successfully.' });
-                } catch (e) {
-                    self.postMessage({ type: 'error', data: { message: e.message, name: e.name, stack: e.stack }});
-                } finally {
-                    self.console.log = originalConsoleLog;
-                }
-            };
-        `;
         const blob = new Blob([workerScript], { type: 'application/javascript' });
         const workerUrl = URL.createObjectURL(blob);
         workerRef.current = new Worker(workerUrl);

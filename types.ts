@@ -1,7 +1,8 @@
+
 import type React from 'react';
 
 // Fix: Added 'iconGenerator' to the View type to allow it as a valid navigation target.
-export type View = 'dashboard' | 'passwordGenerator' | 'jsonFormatter' | 'encoderDecoder' | 'jsonCrack' | 'jsValidator' | 'colorPicker' | 'loremIpsumGenerator' | 'jwtDecoder' | 'hashGenerator' | 'uuidGenerator' | 'unixTimestampConverter' | 'regexTester' | 'fakeDataGenerator' | 'csvXmlToJsonConverter' | 'codeOptimizer' | 'cssPurifier' | 'imageToWebpConverter' | 'iconGenerator' | 'htmlCssCheatSheet' | 'javaScriptCheatSheet' | 'phpLaravelCheatSheet' | 'pythonDrfCheatSheet' | 'gitCheatSheet' | 'bashCheatSheet' | 'powerShellCheatSheet' | 'linuxReference' | 'htaccessCheatSheet';
+export type View = 'dashboard' | 'passwordGenerator' | 'jsonFormatter' | 'encoderDecoder' | 'jsonCrack' | 'colorPicker' | 'loremIpsumGenerator' | 'jwtDecoder' | 'hashGenerator' | 'uuidGenerator' | 'unixTimestampConverter' | 'regexTester' | 'fakeDataGenerator' | 'csvXmlToJsonConverter' | 'codeOptimizer' | 'cssPurifier' | 'imageToWebpConverter' | 'iconGenerator' | 'htmlCssCheatSheet' | 'javaScriptCheatSheet' | 'phpLaravelCheatSheet' | 'pythonDrfCheatSheet' | 'gitCheatSheet' | 'bashCheatSheet' | 'powerShellCheatSheet' | 'linuxReference' | 'htaccessCheatSheet';
 
 export type ToolCategory = 'Generators' | 'JSON' | 'Encoding' | 'Code' | 'Media' | 'Cheat Sheets' | 'System';
 

@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface CheckboxProps {
@@ -32,4 +33,4 @@ const Checkbox: React.FC<CheckboxProps> = ({ label, checked, onChange, container
     );
 };
 
-export default Checkbox;
+export default React.memo(Checkbox);

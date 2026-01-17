@@ -1,3 +1,4 @@
+
 import React from 'react';
 import type { DevTool } from '../types';
 
@@ -32,4 +33,4 @@ const Card: React.FC<CardProps> = ({ tool, onClick }) => {
   );
 };
 
-export default Card;
+export default React.memo(Card);

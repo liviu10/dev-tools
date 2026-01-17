@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import CopyableInput from './ui/CopyableInput';
 import ToolLayout from './ui/ToolLayout';
@@ -59,11 +60,11 @@ const UnixTimestampConverter: React.FC = () => {
 
     }, [timestampInput]);
 
-    const handleDateInputChange = (field: keyof typeof dateInput, value: string) => {
+    const handleDateInputChange = useCallback((field: keyof typeof dateInput, value: string) => {
         setDateInput(prev => ({ ...prev, [field]: value.replace(/[^0-9]/g, '') }));
-    };
+    }, []);
 
-    const setToNow1 = () => {
+    const setToNow1 = useCallback(() => {
         const now = new Date();
         setDateInput({
             year: now.getUTCFullYear().toString(),
@@ -73,11 +74,11 @@ const UnixTimestampConverter: React.FC = () => {
             minute: padNumber(now.getUTCMinutes()),
             second: padNumber(now.getUTCSeconds()),
         });
-    };
+    }, []);
     
-     const setToNow2 = () => {
+     const setToNow2 = useCallback(() => {
         setTimestampInput(Math.floor(Date.now() / 1000).toString());
-    };
+    }, []);
 
     return (
         <ToolLayout title="Unix Timestamp Converter" maxWidth="max-w-6xl">

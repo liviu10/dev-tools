@@ -44,4 +44,4 @@ const NumberedTextarea: React.FC<NumberedTextareaProps> = ({ value, containerCla
     );
 };
 
-export default NumberedTextarea;
+export default React.memo(NumberedTextarea);

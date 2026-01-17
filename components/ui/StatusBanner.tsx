@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 type BannerType = 'error' | 'success' | 'info';
@@ -39,4 +40,4 @@ const StatusBanner: React.FC<StatusBannerProps> = ({ type, title, message }) => 
     );
 };
 
-export default StatusBanner;
+export default React.memo(StatusBanner);

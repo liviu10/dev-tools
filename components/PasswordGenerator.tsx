@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, useMemo } from 'react';
 import { usePasswordGenerator } from '../hooks/usePasswordGenerator';
 import type { PasswordOptions } from '../types';
 import CopyableInput from './ui/CopyableInput';
@@ -14,7 +15,7 @@ const PasswordGenerator: React.FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [options]);
     
-    const getStrength = () => {
+    const strength = useMemo(() => {
         let strength = 0;
         if(options.length >= 8) strength++;
         if(options.length >= 12) strength++;
@@ -26,9 +27,7 @@ const PasswordGenerator: React.FC = () => {
         if (strength <= 2) return { text: 'Weak', color: 'bg-red-500' };
         if (strength <= 4) return { text: 'Medium', color: 'bg-yellow-500' };
         return { text: 'Strong', color: 'bg-green-500' };
-    };
-
-    const strength = getStrength();
+    }, [options]);
 
     return (
         <ToolLayout title="Password Generator" maxWidth="max-w-2xl">

@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface ToolActionButtonsProps {
@@ -62,4 +63,4 @@ const ToolActionButtons: React.FC<ToolActionButtonsProps> = ({
     );
 };
 
-export default ToolActionButtons;
+export default React.memo(ToolActionButtons);

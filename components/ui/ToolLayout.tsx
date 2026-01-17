@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface ToolLayoutProps {
@@ -17,4 +18,4 @@ const ToolLayout: React.FC<ToolLayoutProps> = ({ title, children, maxWidth = 'ma
     );
 };
 
-export default ToolLayout;
+export default React.memo(ToolLayout);

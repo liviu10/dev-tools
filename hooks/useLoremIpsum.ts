@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from 'react';
 
 const DICTIONARY = [
@@ -88,12 +89,12 @@ export const useLoremIpsum = () => {
         setText(newText);
     }, [options, generateParagraphs, generateSentences, generateWords]);
 
-    const updateOption = <K extends keyof LoremIpsumOptions>(
+    const updateOption = useCallback(<K extends keyof LoremIpsumOptions>(
         option: K,
         value: LoremIpsumOptions[K]
     ) => {
         setOptions((prev) => ({ ...prev, [option]: value }));
-    };
+    }, []);
 
     return { text, options, generateText, updateOption };
 };

@@ -28,4 +28,4 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
   );
 };
 
-export default Header;
+export default React.memo(Header);

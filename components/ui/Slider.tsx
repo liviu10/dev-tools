@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface SliderProps {
@@ -30,4 +31,4 @@ const Slider: React.FC<SliderProps> = ({ label, value, min, max, step = 1, unit,
     </div>
 );
 
-export default Slider;
+export default React.memo(Slider);
